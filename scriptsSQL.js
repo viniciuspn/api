@@ -2,7 +2,7 @@ const database = require('./database');
 var connBiblioteca = database.biblioteca('biblioteca');
 
 module.exports = function () {
-//editora
+  //editora
   function verificaEditora(nome, callback) {
     return connBiblioteca('editora')
       .where({
@@ -47,7 +47,7 @@ module.exports = function () {
       })
 
   };
-//Autor
+  //Autor
   function verificaAutor(nome, callback) {
     return connBiblioteca('autor')
       .where({
@@ -93,6 +93,82 @@ module.exports = function () {
 
   };
 
+  //Livro
+  function verificaLivro(nome, callback) {
+    return connBiblioteca('livro')
+      .where({
+        nome_livro: nome
+      })
+      .count()
+      .select();
+  };
+
+  function addLivro(nome, id) {
+    return connBiblioteca('livro')
+      .insert({
+        nome_livro: nome,
+        id_autor: id.idEditora,
+        id_editora: id.idAutor
+
+      });
+
+  };
+
+  function editarLivro(id, nome) {
+    return connBiblioteca('livro')
+      .where({
+        id_livro: id
+      })
+      .update({
+        nome_livro: nome
+      })
+
+  };
+
+  function editarLivroEditoraAutor(id, idLivro, tipo) {
+    var updateSet = {}
+    if (tipo === 1) {
+      updateSet = { id_autor: + id }
+    } else {
+      updateSet = { id_editora: id }
+    }
+    return connBiblioteca('livro')
+      .where({
+        id_livro: idLivro
+      })
+      .update(
+        updateSet
+      )
+
+  };
+
+  function deletarLivro(id) {
+    return connBiblioteca('livro')
+      .where({
+        id_livro: id
+      })
+      .delete();
+
+  };
+
+  function retornaLivros() {
+    return connBiblioteca('livro as livro')
+      .join('autor as autor', function () {
+        this.on('livro.id_autor', '=', 'autor.id_autor')
+      })
+      .join('editora as editora', function () {
+        this.on('livro.id_autor', '=', 'editora.id_editora')
+      })
+      .select(
+        'livro.id_livro as idLivro',
+        'livro.nome_livro as nomeLivro',
+        'autor.id_autor as idAutor',
+        'autor.nome_autor as nomeAutor',
+        'editora.id_editora as idEditora',
+        'editora.nome_editora as nomeEditora'
+      )
+  };
+
   return {
     verificaEditora: verificaEditora,
     addEditora: addEditora,
@@ -103,7 +179,13 @@ module.exports = function () {
     addAutor: addAutor,
     retornaAutores: retornaAutores,
     deletarAutor: deletarAutor,
-    editarAutor: editarAutor
+    editarAutor: editarAutor,
+    verificaLivro: verificaLivro,
+    addLivro: addLivro,
+    editarLivro: editarLivro,
+    editarLivroEditoraAutor: editarLivroEditoraAutor,
+    deletarLivro: deletarLivro,
+    retornaLivros: retornaLivros
   }
 
 }

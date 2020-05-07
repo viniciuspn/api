@@ -7,11 +7,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const clienteSql = require('./scriptsSQL')();
-const expressValidator = require('express-validator');
+
 
 const campoBrigatorioEditora = ['nomeEditora'];
 const campoBrigatorioAutor = ['nomeAutor'];
-const campoBrigatorioLivro= ['nomeLivro'];
+const campoBrigatorioLivro = ['nomeLivro'];
 
 const campoBrigatorioEditar = ['novoNome'];
 
@@ -197,7 +197,7 @@ app.post('/cadatrar/autor', (req, res) => {
                             res.status(200);
                             res.send({
                                 data: body.nomeAutor,
-                                message: 'Autor cadatrada com sucesso'
+                                message: 'Autor cadatrado com sucesso'
                             });
                         })
                         .catch(function (error) {
@@ -308,8 +308,187 @@ app.delete('/deltar/autor/:idAutor', (req, res) => {
 
 });
 
+//Livro
+app.post('/cadatrar/livro/:idEditora/:idAutor', (req, res) => {
+    const body = req.body;
+    const parametro = req.params;
+    var errorReponse = [];
+    var validaBody = validations.validaBody(body, campoBrigatorioLivro);
+    if (validaBody.length) {
+        errorReponse.push({
+            body: {
+                data: validaBody,
+                message: 'Campos devem ser preenchidos'
+            }
+        });
+    }
+
+    if (errorReponse.length) {
+        res.status(400);
+        res.send(errorReponse);
+    } else {
+        clienteSql.verificaLivro(body.nomeLivro)
+            .then(function (rows) {
+                if (rows[0]['count(*)'] > 0) {
+                    res.status(200);
+                    res.send({
+                        data: body.nomeLivro,
+                        message: 'Livro já cadastrado'
+                    });
+                } else {
+                    clienteSql.addLivro(body.nomeLivro, parametro)
+                        .then(function (rows) {
+                            res.status(200);
+                            res.send({
+                                data: body.nomeLivro,
+                                message: 'Livro cadatrado com sucesso'
+                            });
+                        })
+                        .catch(function (error) {
+                            res.status(500);
+                            res.send({
+                                data: body.nomeLivro,
+                                message: 'Erro ao gravar Livro'
+                            });
+                        });
+
+                }
+            }).catch(function (error) {
+                res.status(500);
+                res.send({
+                    data: body.nomeAutor,
+                    message: 'Erro ao Pesquisar Livro'
+                });
+            });
+    }
+});
+
+app.put('/editar/nome/livro/:idLivro', (req, res) => {
+    const parametro = req.params;
+    const body = req.body;
+    var errorReponse = [];
+    var validaBody = validations.validaBody(body, campoBrigatorioEditar);
+    if (validaBody.length) {
+        errorReponse.push({
+            body: {
+                data: validaBody,
+                message: 'Campos devem ser preenchidos'
+            }
+        });
+    }
+
+    if (errorReponse.length) {
+        res.status(400);
+        res.send(errorReponse);
+    } else {
+        clienteSql.verificaLivro(body.novoNome)
+            .then(function (rows) {
+                if (rows[0]['count(*)'] > 0) {
+                    res.status(200);
+                    res.send({
+                        data: body.novoNome,
+                        message: 'Este nome já foi cadastrado'
+                    });
+                } else {
+                    clienteSql.editarLivro(parametro.idLivro, body.novoNome)
+                        .then(function (rows) {
+                            res.status(200);
+                            res.send({
+                                data: body.novoNome,
+                                message: 'Nome alterado com sucesso'
+                            });
+                        })
+                        .catch(function (error) {
+                            res.status(500);
+                            res.send({
+                                data: body.novoNome,
+                                message: 'Erro ao altera o nome do Livro'
+                            });
+                        });
+
+                }
+            }).catch(function (error) {
+                res.status(500);
+                res.send({
+                    data: body.novoNome,
+                    message: 'Erro ao Pesquisar Livro'
+                });
+            });
+    }
+});
+
+app.put('/editar/editora/livro/:idLivro/:idEditora', (req, res) => {
+    const parametro = req.params;
+    clienteSql.editarLivroEditoraAutor(parametro.idEditora, parametro.idLivro, 2)
+        .then(function (rows) {
+            res.status(200);
+            res.send({
+                message: 'Editora alterado com sucesso'
+            });
+        })
+        .catch(function (error) {
+            res.status(500);
+            res.send({
+                message: 'Erro ao alterar a Editora do Livro'
+            });
+        });
 
 
+});
+
+app.put('/editar/autor/livro/:idLivro/:idAutor', (req, res) => {
+    const parametro = req.params;
+    clienteSql.editarLivroEditoraAutor(parametro.idAutor, parametro.idLivro, 1)
+        .then(function (rows) {
+            res.status(200);
+            res.send({
+                message: 'Autor alterado com sucesso'
+            });
+        })
+        .catch(function (error) {
+            res.status(500);
+            res.send({
+                message: 'Erro ao alterar a Autor do Livro'
+            });
+        });
+
+
+});
+
+app.delete('/deltar/livro/:idLivro', (req, res) => {
+    const parametro = req.params;
+
+    clienteSql.deletarLivro(parametro.idLivro)
+        .then(function (rows) {
+            res.status(200)
+            res.send({
+                message: 'Livro deletada com sucesso'
+            })
+        })
+        .catch(function (erro) {
+            res.status(500)
+            res.send({
+                message: 'Erro ao Deletar Livro'
+            })
+        })
+
+});
+
+app.get('/listar/livros', (req, res) => {
+    clienteSql.retornaLivros()
+        .then(function (rows) {
+            res.status(500);
+            res.send({
+                data: rows
+            });
+        })
+        .catch(function (erro) {
+            res.status(500)
+            res.send({
+                message: 'Erro na pesquisa de Livros'
+            })
+        });
+});
 
 
 module.exports = app;
