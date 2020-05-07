@@ -1,0 +1,113 @@
+Para executar aplicação é necessário ter o node js, npm  e SQLite3  instalado em sua máquina.
+Link para dowload 
+node: https://nodejs.org/en/download/
+SQLite3: https://www.sqlite.org/download.html
+
+Instalação no Linux​​ :
+acesso terminal e digite o seguintes comandos abaixo:
+Instalar node js​​ :
+sudo apt-get update
+sudo apt-get install nodejs
+sudo apt-get install npm
+
+Instalar o SQLite3
+apt-get install sqlite3
+apt-get install libsqlite3-dev
+apt-get install sqlitebrowser
+
+
+Após a instalação acessar a pasta do projeto e instalar as dependências utilize o comando ‘npm install’
+Após a instalação das dependência execute o comando ‘nodemon server.js’ para levantar o serviço.
+
+Urls:
+
+--------------Editora-----------------------
+Url: http://localhost:3000/cadastrar/editora
+Metodo: post
+Encaminhar para o backand: nomeEditora via body
+campo obrigatorio: nomeEditora
+Ação: Castrar uma nova editora
+
+Url: http://localhost:3000/listar/editoras
+Metodo: get
+Encaminhar para o backand: 
+campo obrigatorio:
+Ação: Retorna todos as editoras cadastrada
+
+Url: http://localhost:3000/deltar/editora/:idEditora
+Metodo: delet
+Encaminhar para o backand: idEditora  via parametro; 
+campo obrigatorio: idEditora
+Ação: Deletar uma editora
+
+Url: http://localhost:3000/editar/editora/:idEditora
+Metodo: put
+Encaminhar para o backand: idEditora via parametro; novoNome via body
+campo obrigatorio: idEditora e novoNome
+Ação: alterar o nome da editora
+
+----------------Autor------------------------
+Url: http://localhost:3000/cadatrar/autor
+Metodo: post
+Encaminhar para o backand: nomeAutor via body
+campo obrigatorio: nomeAutor
+Ação: Castrar um novo autor
+
+Url: http://localhost:3000/listar/autores
+Metodo: get
+Encaminhar para o backand: 
+campo obrigatorio:
+Ação: Listar todos autores
+
+Url: http://localhost:3000/editar/autor/:idAutor
+Metodo: put
+Encaminhar para o backand: idAutor via parametro; novoNome via body
+campo obrigatorio: idAutor e novoNome
+Ação: Altera o nome do autor
+
+Url: http://localhost:3000/deltar/autor/:idAutor
+Metodo: delete
+Encaminhar para o backand: idAutor  via parametro; 
+campo obrigatorio: idAutor
+Ação: Deletar um autor
+
+----------------livro--------------------------
+Url: http://localhost:3000/cadatrar/livro/:idEditora/:idAutor
+Metodo: post
+Encaminhar para o backand: idEditora e idAutor via parametro; nomeLivro via body
+campo obrigatorio: idEditora, idAutor e nomeLivro
+Ação: Cadastrar um novo livro
+
+Url: http://localhost:3000/editar/nome/livro/:idLivro
+Metodo: put
+Encaminhar para o backand: idLivro via parametro; novoNome via body
+campo obrigatorio: idLivro e novoNome
+Ação: Altera o nome de um livro
+
+Url: http://localhost:3000/editar/editora/livro/:idLivro/:idEditora
+Metodo: put
+Encaminhar para o backand: idLivro e idEditora via parametro;
+campo obrigatorio: idLivro e idEditora
+Ação: Altera a editora de um livro
+
+Url: http://localhost:3000/editar/autor/livro/:idLivro/:idAutor
+Metodo: put
+Encaminhar para o backand: idLivro e idAutor via parametro;
+campo obrigatorio:  idLivro e idAutor
+Ação: Altera o autor de um livro
+
+Url: http://localhost:3000/listar/livros
+Metodo: get
+Encaminhar para o backand: 
+campo obrigatorio:
+Ação:  listar todos os livros
+
+Url: http://localhost:3000/deltar/livro/:idLivro
+Metodo: delete
+Encaminhar para o backand: idLivro  via parametro; 
+campo obrigatorio:
+Ação: Deletar um livro
+
+
+
+
