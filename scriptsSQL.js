@@ -2,7 +2,7 @@ const database = require('./database');
 var connBiblioteca = database.biblioteca('biblioteca');
 
 module.exports = function () {
-
+//editora
   function verificaEditora(nome, callback) {
     return connBiblioteca('editora')
       .where({
@@ -47,12 +47,63 @@ module.exports = function () {
       })
 
   };
+//Autor
+  function verificaAutor(nome, callback) {
+    return connBiblioteca('autor')
+      .where({
+        nome_autor: nome
+      })
+      .count()
+      .select();
+  };
+
+  function addAutor(nome) {
+    return connBiblioteca('autor')
+      .insert({
+        nome_autor: nome
+      });
+
+  };
+
+  function retornaAutores() {
+    return connBiblioteca('autor')
+      .select(
+        'id_autor as idAutor',
+        'nome_autor as nome'
+      )
+  };
+
+  function deletarAutor(id) {
+    return connBiblioteca('autor')
+      .where({
+        id_autor: id
+      })
+      .delete();
+
+  };
+
+  function editarAutor(id, nome) {
+    return connBiblioteca('autor')
+      .where({
+        id_autor: id
+      })
+      .update({
+        nome_autor: nome
+      })
+
+  };
+
   return {
     verificaEditora: verificaEditora,
     addEditora: addEditora,
     retornaEditoras: retornaEditoras,
     deletarEditora: deletarEditora,
-    editarEditora: editarEditora
+    editarEditora: editarEditora,
+    verificaAutor: verificaAutor,
+    addAutor: addAutor,
+    retornaAutores: retornaAutores,
+    deletarAutor: deletarAutor,
+    editarAutor: editarAutor
   }
 
 }
