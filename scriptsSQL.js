@@ -14,33 +14,45 @@ module.exports = function () {
 
   function addEditora(nome) {
     return connBiblioteca('editora')
-    .insert({
-      nome_editora: nome
-    });
-    
+      .insert({
+        nome_editora: nome
+      });
+
   };
 
-  function retornaEditoras(){
+  function retornaEditoras() {
     return connBiblioteca('editora')
-    .select(
-      'id_editora as idEditora',
-      'nome_editora as nome'
-    )
+      .select(
+        'id_editora as idEditora',
+        'nome_editora as nome'
+      )
   };
 
-  function deletarEditora(id){
+  function deletarEditora(id) {
     return connBiblioteca('editora')
-    .where({
-      id_editora: id
-    })
-    .delete();
+      .where({
+        id_editora: id
+      })
+      .delete();
 
-  }
+  };
+
+  function editarEditora(id, nome) {
+    return connBiblioteca('editora')
+      .where({
+        id_editora: id
+      })
+      .update({
+        nome_editora: nome
+      })
+
+  };
   return {
     verificaEditora: verificaEditora,
     addEditora: addEditora,
     retornaEditoras: retornaEditoras,
-    deletarEditora: deletarEditora
+    deletarEditora: deletarEditora,
+    editarEditora: editarEditora
   }
 
 }
