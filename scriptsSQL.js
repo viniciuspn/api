@@ -157,7 +157,7 @@ module.exports = function () {
         this.on('livro.id_autor', '=', 'autor.id_autor')
       })
       .join('editora as editora', function () {
-        this.on('livro.id_autor', '=', 'editora.id_editora')
+        this.on('livro.id_editora', '=', 'editora.id_editora')
       })
       .select(
         'livro.id_livro as idLivro',
